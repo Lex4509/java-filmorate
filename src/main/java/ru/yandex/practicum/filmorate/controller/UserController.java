@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ExistionException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -16,6 +16,7 @@ public class UserController {
 
     private final static Logger log = LoggerFactory.getLogger(UserController.class);
 
+    private final UserValidator userValidator = new UserValidator();
     private final List<User> users = new ArrayList<>();
     private int generator = 1;
 
@@ -28,7 +29,7 @@ public class UserController {
     public User create(@Valid @RequestBody User user) throws ValidationException {
         log.info("Create user request");
         try {
-            validate(user);
+            userValidator.validate(user);
             user.setId(generator);
             if (user.getName() == null) {
                 user.setName(user.getLogin());
@@ -46,7 +47,7 @@ public class UserController {
     public User update (@Valid @RequestBody User user) throws ExistionException, ValidationException {
         log.info("Update user request");
         try {
-            validate(user);
+            userValidator.validate(user);
             if (user.getName() == null) {
                 user.setName(user.getLogin());
             }
@@ -72,18 +73,4 @@ public class UserController {
         }
     }
 
-    public void validate(User user) throws ValidationException {
-        if (user.getLogin().equals("")) {
-            log.error("Login length should not be empty");
-            throw new ValidationException("Invalid login");
-        }
-        if (user.getLogin().contains(" ")){
-            log.error("Login may not contain spaces");
-            throw new ValidationException("Invalid login");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Birthday should not be in future");
-            throw new ValidationException("Invalid birthday");
-        }
-    }
 }

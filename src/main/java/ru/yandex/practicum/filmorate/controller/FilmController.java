@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ExistionException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -17,9 +18,7 @@ public class FilmController {
 
     private final static Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    private final int DESCRIPTION_MAX_LENGTH = 200;
-    private final LocalDate MIN_RELEASE_DATE= LocalDate.parse("1895-12-28");
-
+    private final FilmValidator filmValidator = new FilmValidator();
     private final List<Film> films = new ArrayList<>();
     private int generator = 1;
 
@@ -32,7 +31,7 @@ public class FilmController {
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
         log.info("Create film request");
         try {
-            validate(film);
+            filmValidator.validate(film);
             film.setId(generator);
             films.add(film);
             generator += 1;
@@ -48,7 +47,7 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film) throws ExistionException, ValidationException {
         log.info("Update film request");
         try {
-            validate(film);
+            filmValidator.validate(film);
             boolean isExist = false;
             for (Film currentFilm : films) {
                 if (currentFilm.getId() == film.getId()) {
@@ -70,18 +69,4 @@ public class FilmController {
         }
     }
 
-    public void validate(Film film) throws ValidationException {
-        if (film.getDescription().length()>DESCRIPTION_MAX_LENGTH) {
-            log.error("Too large film description");
-            throw new ValidationException("Invalid description length");
-        }
-        if (film.getDuration()<=0) {
-            log.error("Duration should be positive");
-            throw new ValidationException("Invalid duration");
-        }
-        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            log.error("Release date should be after {}", MIN_RELEASE_DATE);
-            throw new ValidationException("Invalid release date");
-        }
-    }
 }
