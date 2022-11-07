@@ -2,11 +2,13 @@ package ru.yandex.practicum.filmorate.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
+@Component
 public class FilmValidator {
 
     private final static Logger log = LoggerFactory.getLogger(FilmValidator.class);
