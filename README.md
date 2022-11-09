@@ -25,7 +25,7 @@ WHERE friendship.user_id = n
 ### get 10 most popular film ids and likes quantity:
   
 SELECT film_id,  
-    COUNT(id) AS like quantity  
+    COUNT(id) AS like_quantity  
 FROM like  
 GROUP BY film_id   
 ORDER BY like_quantity DESC   
