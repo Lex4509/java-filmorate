@@ -31,12 +31,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user){
+    public User create(@RequestBody User user){
         return userStorage.create(user);
     }
 
     @PutMapping(value = "/users")
-    public User update (@Valid @RequestBody User user) throws NotExistException, ValidationException {
+    public User update (@RequestBody User user) throws NotExistException, ValidationException {
         return userStorage.update(user);
     }
 

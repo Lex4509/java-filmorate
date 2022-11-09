@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -37,12 +36,12 @@ public class FilmController {
     }
 
     @PostMapping(value = "/films")
-    public Film create(@Valid @RequestBody Film film) throws ValidationException {
+    public Film create(@RequestBody Film film) throws ValidationException {
         return filmStorage.create(film);
     }
 
     @PutMapping(value = "/films")
-    public Film update(@Valid @RequestBody Film film) throws NotExistException, ValidationException {
+    public Film update(@RequestBody Film film) throws NotExistException, ValidationException {
         return filmStorage.update(film);
     }
 

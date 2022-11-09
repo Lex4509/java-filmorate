@@ -29,6 +29,10 @@ public class FilmValidator {
             log.error("Release date should be after {}", MIN_RELEASE_DATE);
             throw new ValidationException("Invalid release date");
         }
+        if (film.getName().equals("") || film.getName()==null){
+            log.error("Name should not be empty");
+            throw new ValidationException("Invalid film name");
+        }
     }
 
 }
