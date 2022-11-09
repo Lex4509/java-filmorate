@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ExistionException;
+import ru.yandex.practicum.filmorate.exception.ExistException;
+import ru.yandex.practicum.filmorate.exception.NotExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -14,63 +16,71 @@ import java.util.*;
 @RestController
 public class UserController {
 
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
+    private final UserStorage userStorage;
+    private final UserService userService;
 
-    private final UserValidator userValidator = new UserValidator();
-    private final List<User> users = new ArrayList<>();
-    private int generator = 1;
+    @Autowired
+    public UserController(UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> findAll(){
-        return users;
+        return userStorage.findAll();
     }
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        log.info("Create user request");
-        try {
-            userValidator.validate(user);
-            user.setId(generator);
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-            }
-            users.add(user);
-            generator += 1;
-            return user;
-        } catch (ValidationException e){
-            log.error(e.getMessage());
-            throw e;
-        }
+    public User create(@RequestBody User user){
+        return userStorage.create(user);
     }
 
     @PutMapping(value = "/users")
-    public User update (@Valid @RequestBody User user) throws ExistionException, ValidationException {
-        log.info("Update user request");
-        try {
-            userValidator.validate(user);
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-            }
+    public User update (@RequestBody User user) throws NotExistException, ValidationException {
+        return userStorage.update(user);
+    }
 
-            boolean isExist = false;
-            for (User currentUser : users) {
-                if (currentUser.getId() == user.getId()) {
-                    users.remove(currentUser);
-                    isExist = true;
-                    break;
-                }
-            }
-            if (isExist){
-                users.add(user);
-                return user;
-            } else {
-                log.error("User does not exist in db");
-                throw new ExistionException("User does not exist in db");
-            }
-        } catch (ValidationException e) {
-            log.error(e.getMessage());
-            throw e;
-        }
+    @GetMapping(value = "/users/{id}")
+    public User findById(@PathVariable int id){
+        return userStorage.findById(id);
+    }
+
+    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable int id, @PathVariable int friendId){
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping(value = "/users/{id}/friends/{friendId}")
+    public User deleteFriend(@PathVariable int id, @PathVariable int friendId){
+        return userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping(value = "/users/{id}/friends")
+    public List<User> getFriends(@PathVariable int id){
+        return userService.getFriends(id);
+    }
+
+    @GetMapping(value = "/users/{id}/friends/common/{otherId}")
+    public List<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId){
+        return userService.getMutualFriends(id, otherId);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationException(final ValidationException e){
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNotExistException(final NotExistException e){
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleExistException(final ExistException e){
+        return Map.of("error", e.getMessage());
     }
 
 }

@@ -2,11 +2,13 @@ package ru.yandex.practicum.filmorate.validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
+@Component
 public class FilmValidator {
 
     private final static Logger log = LoggerFactory.getLogger(FilmValidator.class);
@@ -26,6 +28,10 @@ public class FilmValidator {
         if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.error("Release date should be after {}", MIN_RELEASE_DATE);
             throw new ValidationException("Invalid release date");
+        }
+        if (film.getName().equals("") || film.getName()==null){
+            log.error("Name should not be empty");
+            throw new ValidationException("Invalid film name");
         }
     }
 
