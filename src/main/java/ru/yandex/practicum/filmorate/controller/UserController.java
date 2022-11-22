@@ -11,19 +11,19 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
 
     private final UserStorage userStorage;
-    private final UserService userService;
+    private final UserService UserService;
 
     @Autowired
-    public UserController(@Qualifier("userDbStorage") UserStorage userStorage, UserService userService) {
+    public UserController(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("userDbService") UserService UserService) {
         this.userStorage = userStorage;
-        this.userService = userService;
+        this.UserService = UserService;
     }
 
     @GetMapping("/users")
@@ -48,22 +48,22 @@ public class UserController {
 
     @PutMapping(value = "/users/{id}/friends/{friendId}")
     public User addFriend(@PathVariable int id, @PathVariable int friendId){
-        return userService.addFriend(id, friendId);
+        return UserService.addFriend(id, friendId);
     }
 
     @DeleteMapping(value = "/users/{id}/friends/{friendId}")
     public User deleteFriend(@PathVariable int id, @PathVariable int friendId){
-        return userService.deleteFriend(id, friendId);
+        return UserService.deleteFriend(id, friendId);
     }
 
     @GetMapping(value = "/users/{id}/friends")
     public List<User> getFriends(@PathVariable int id){
-        return userService.getFriends(id);
+        return UserService.getFriends(id);
     }
 
     @GetMapping(value = "/users/{id}/friends/common/{otherId}")
     public List<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId){
-        return userService.getMutualFriends(id, otherId);
+        return UserService.getMutualFriends(id, otherId);
     }
 
     @ExceptionHandler
