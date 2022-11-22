@@ -2,7 +2,8 @@
 Template repository for Filmorate project.
 
 ## ERD: 
-![ERD](https://github.com/Lex4509/java-filmorate/blob/main/erd%20flmorate.png)
+![ERD](https://user-images.githubusercontent.com/106984793/203444197-c76b183f-e85b-4ff2-8fff-5b9002f15f1d.png)
+
 
 
 ## SQL examples:
