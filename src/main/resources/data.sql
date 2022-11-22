@@ -1,5 +1,6 @@
 delete from friendship;
 delete from friendship_status;
+delete from LIKES;
 delete from usr;
 delete from FILM_GENRE;
 delete from GENRE;
@@ -24,3 +25,10 @@ INSERT INTO GENRE (NAME) VALUES ( 'Мультфильм' );
 INSERT INTO GENRE (NAME) VALUES ( 'Триллер' );
 INSERT INTO GENRE (NAME) VALUES ( 'Документальный' );
 INSERT INTO GENRE (NAME) VALUES ( 'Боевик' );
+
+--insert into LIKES (USER_ID, FILM_ID) values ( 1,1 );
+
+-- SELECT id, name, description, release_date, duration, mpa_rating_id FROM film f LEFT JOIN likes l ON f.id = l.film_id
+--                 GROUP BY f.id
+--                 ORDER BY COUNT(l.film_id) DESC
+--                 LIMIT 8;

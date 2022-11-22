@@ -17,12 +17,12 @@ import java.util.Map;
 @RestController
 public class FilmController {
 
-    private final FilmService filmService;
+    private final FilmService FilmService;
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmController(FilmService filmService, @Qualifier("filmDbStorage") FilmStorage filmStorage) {
-        this.filmService = filmService;
+    public FilmController(@Qualifier("filmDbService") FilmService FilmService, @Qualifier("filmDbStorage") FilmStorage filmStorage) {
+        this.FilmService = FilmService;
         this.filmStorage = filmStorage;
     }
 
@@ -48,17 +48,17 @@ public class FilmController {
 
     @PutMapping(value = "/films/{id}/like/{userId}")
     public Film like(@PathVariable int id, @PathVariable int userId) {
-        return filmService.like(id, userId);
+        return FilmService.like(id, userId);
     }
 
     @DeleteMapping(value = "/films/{id}/like/{userId}")
     public Film disLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.disLike(id, userId);
+        return FilmService.disLike(id, userId);
     }
 
     @GetMapping(value = "/films/popular")
     public List<Film> showMostPopularFilms(@RequestParam(required = false, defaultValue = "10") int count){
-        return filmService.showMostPopularFilms(count);
+        return FilmService.showMostPopularFilms(count);
     }
 
     @ExceptionHandler
