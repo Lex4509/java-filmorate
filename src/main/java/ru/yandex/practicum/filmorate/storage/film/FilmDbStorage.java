@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -18,7 +19,10 @@ import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.sql.PreparedStatement;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class FilmDbStorage implements FilmStorage{
@@ -99,16 +103,19 @@ public class FilmDbStorage implements FilmStorage{
 
             jdbcTemplate.update(sqlGenreDelete, film.getId());
 
-            Genre[] genres = film.getGenres();
-            if (genres != null && genres.length>0) {
+            Genre[] genresArray = film.getGenres();
+
+            if (genresArray != null && genresArray.length>0) {
+                Set<Genre> genres = new HashSet<>(List.of(genresArray));
                 for (Genre genre : genres) {
                     jdbcTemplate.update(sqlGenreUpdate, film.getId(), genre.getId());
+
                 }
             }
 
             log.info("Film id " + film.getId() + " updated");
 
-            return film;
+            return findById(film.getId());
         } catch (ValidationException e) {
             log.error(e.getMessage());
             throw e;
