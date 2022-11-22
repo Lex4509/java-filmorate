@@ -25,7 +25,7 @@ public class FilmService {
     private final static Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, @Qualifier("inMemoryUserStorage") UserStorage userStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, @Qualifier("inMemoryUserStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }

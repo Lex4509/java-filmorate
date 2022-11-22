@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ExistException;
@@ -20,7 +21,7 @@ public class FilmController {
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmController(FilmService filmService, FilmStorage filmStorage) {
+    public FilmController(FilmService filmService, @Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmService = filmService;
         this.filmStorage = filmStorage;
     }
