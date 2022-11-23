@@ -66,9 +66,5 @@ public class FilmDbService implements FilmService{
                 "LIMIT ?";
 
         return jdbcTemplate.query(sql, new FilmMapper(jdbcTemplate), count);
-
-//        return filmStorage.findAll().stream().sorted((o1, o2) -> o2.getLikeUsers().size() - o1.getLikeUsers().size())
-//                .limit(count)
-//                .collect(Collectors.toList());
     }
 }

@@ -31,10 +31,4 @@ public class GenreController {
         return genresDao.findById(id);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotExistException(final NotExistException e){
-        return Map.of("error", e.getMessage());
-    }
-
 }
