@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ExistException;
@@ -16,12 +17,12 @@ import java.util.Map;
 @RestController
 public class FilmController {
 
-    private final FilmService filmService;
+    private final FilmService FilmService;
     private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmController(FilmService filmService, FilmStorage filmStorage) {
-        this.filmService = filmService;
+    public FilmController(@Qualifier("filmDbService") FilmService FilmService, @Qualifier("filmDbStorage") FilmStorage filmStorage) {
+        this.FilmService = FilmService;
         this.filmStorage = filmStorage;
     }
 
@@ -47,35 +48,17 @@ public class FilmController {
 
     @PutMapping(value = "/films/{id}/like/{userId}")
     public Film like(@PathVariable int id, @PathVariable int userId) {
-        return filmService.like(id, userId);
+        return FilmService.like(id, userId);
     }
 
     @DeleteMapping(value = "/films/{id}/like/{userId}")
     public Film disLike(@PathVariable int id, @PathVariable int userId) {
-        return filmService.disLike(id, userId);
+        return FilmService.disLike(id, userId);
     }
 
     @GetMapping(value = "/films/popular")
     public List<Film> showMostPopularFilms(@RequestParam(required = false, defaultValue = "10") int count){
-        return filmService.showMostPopularFilms(count);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(final ValidationException e){
-        return Map.of("error", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotExistException(final NotExistException e){
-        return Map.of("error", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleExistException(final ExistException e){
-        return Map.of("error", e.getMessage());
+        return FilmService.showMostPopularFilms(count);
     }
 
 }
