@@ -102,7 +102,7 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public void deleteById(Long id) {
-        final var sql = "DELETE FROM film WHERE film_id = ?";
+        final String sql = "DELETE FROM film WHERE film_id = ?";
         jdbcTemplate.update(sql, id);
     }
 

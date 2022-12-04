@@ -36,9 +36,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film getById(final Long id) {
-        final var film = filmDao.findById(id);
+        final Film film = filmDao.findById(id);
         throwExceptionIfFilmNotExists(film);
-
         return setGenres(film);
     }
 

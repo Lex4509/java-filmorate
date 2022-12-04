@@ -82,7 +82,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void deleteById(Long id) {
-        final var sql = "DELETE FROM users WHERE user_id = ?";
+        final String sql = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
