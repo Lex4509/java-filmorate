@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.NotContainsWhitespaces;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class User {
 
     private Long id;

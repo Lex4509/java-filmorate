@@ -124,4 +124,9 @@ public class FilmServiceImpl implements FilmService {
 
         filmGenreService.addGenresToFilm(film.getId(), genresId);
     }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        return filmDao.getCommonFilms(userId, friendId);
+    }
 }

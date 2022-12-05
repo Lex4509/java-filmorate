@@ -1,3 +1,4 @@
+drop all objects;
 CREATE TABLE IF NOT EXISTS users
 (
     user_id  IDENTITY NOT NULL PRIMARY KEY,
