@@ -6,6 +6,10 @@ delete from GENRE;
 delete from FILM;
 delete from MPA;
 
+--удаление reviews
+delete from reviews;
+delete from reviews_rate;
+
 ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1;
 ALTER TABLE film ALTER COLUMN film_id RESTART WITH 1;
 ALTER TABLE GENRE ALTER COLUMN genre_id RESTART WITH 1;
