@@ -52,4 +52,10 @@ public class FilmController {
     public void dislike(@PathVariable Long filmId, @PathVariable Long userId) {
         filmService.deleteLike(filmId, userId);
     }
+
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam(name = "userId") Long userId,
+                                     @RequestParam(name = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
 }
