@@ -5,11 +5,14 @@ delete from FILM_GENRE;
 delete from GENRE;
 delete from FILM;
 delete from MPA;
+delete from feed;
+delete from event;
 
 ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1;
 ALTER TABLE film ALTER COLUMN film_id RESTART WITH 1;
 ALTER TABLE GENRE ALTER COLUMN genre_id RESTART WITH 1;
 ALTER TABLE MPA ALTER COLUMN mpa_id RESTART WITH 1;
+ALTER TABLE event ALTER COLUMN event_id RESTART WITH 1;
 
 MERGE INTO genre KEY (genre_id) VALUES (1, 'Комедия');
 MERGE INTO genre KEY (genre_id) VALUES (2, 'Драма');

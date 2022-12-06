@@ -3,7 +3,10 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.dao.FilmLikeDao;
+import ru.yandex.practicum.filmorate.model.event.EventType;
+import ru.yandex.practicum.filmorate.model.event.Operation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +17,7 @@ import java.util.List;
 public class FilmLikeDaoImpl implements FilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final EventDao eventDao;
 
     @Override
     public List<Long> findMostLikedFilms(int limit) {
@@ -27,6 +31,7 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
 
     @Override
     public void add(Long filmId, Long userId) {
+        eventDao.addEvent(userId, EventType.LIKE, Operation.ADD, filmId);
         final var sql = "MERGE INTO film_like KEY (film_id, user_id) " +
                 "VALUES (?, ?)";
         jdbcTemplate.update(sql, filmId, userId);

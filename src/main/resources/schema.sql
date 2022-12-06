@@ -58,3 +58,24 @@ CREATE TABLE IF NOT EXISTS friendship
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
     FOREIGN KEY (friend_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
+
+CREATE TYPE IF NOT EXISTS event_types as enum ('LIKE', 'REVIEW', 'FRIEND');
+
+CREATE TYPE IF NOT EXISTS operations as enum ('REMOVE', 'ADD', 'UPDATE');
+
+CREATE TABLE IF NOT EXISTS event
+(
+    event_id     IDENTITY NOT NULL PRIMARY KEY,
+    event_time   TIMESTAMP NOT NULL,
+    event_type   event_types,
+    operation    operations,
+    entity_id     BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS feed
+(
+    user_id      BIGINT NOT NULL,
+    event_id     BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES event (event_id) ON DELETE CASCADE
+);
