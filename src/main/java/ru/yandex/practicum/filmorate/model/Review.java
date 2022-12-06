@@ -1,13 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Data
+@ToString
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Review {
 
@@ -26,6 +29,7 @@ public class Review {
     @NotNull
     private Long filmId;
 
-    private Long useful;
+
+    private int useful;
 
 }
