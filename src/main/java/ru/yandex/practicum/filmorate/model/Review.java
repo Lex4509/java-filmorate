@@ -6,12 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@ToString
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data
 public class Review {
 
     private Long reviewId;

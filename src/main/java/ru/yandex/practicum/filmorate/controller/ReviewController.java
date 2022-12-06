@@ -16,23 +16,15 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final UserService userService;
-    private final FilmService filmService;
 
     public ReviewController(ReviewService reviewService, UserService userService, FilmService filmService) {
         this.reviewService = reviewService;
-        this.userService = userService;
-        this.filmService = filmService;
     }
 
     //добавление нового
     @PostMapping
     public Review create(@Valid @RequestBody Review review) {
         log.info("Сохраняется {}", review.toString());
-        //проверка пользователя
-        userService.getById(review.getUserId());
-        //проверка фильм
-        filmService.getById(review.getFilmId());
 
         reviewService.save(review);
 
@@ -43,10 +35,6 @@ public class ReviewController {
     @PutMapping
     public Review update(@Valid @RequestBody Review review) {
         log.info("Обновляется {}", review.toString());
-        //проверка пользователя
-        userService.getById(review.getUserId());
-        //проверка фильм
-        filmService.getById(review.getFilmId());
 
         reviewService.update(review);
 

@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.dao.ReviewLikeDao;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
 
@@ -13,10 +15,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewDao reviewDao;
     private final ReviewLikeDao reviewLikeDao;
+    private final UserService userService;
+    private final FilmService filmService;
 
-    public ReviewServiceImpl(ReviewDao reviewDao, ReviewLikeDao reviewLikeDao) {
+    public ReviewServiceImpl(ReviewDao reviewDao, ReviewLikeDao reviewLikeDao, UserService userService, FilmService filmService) {
         this.reviewDao = reviewDao;
         this.reviewLikeDao = reviewLikeDao;
+        this.userService = userService;
+        this.filmService = filmService;
     }
 
     @Override
@@ -33,11 +39,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review save(Review review) {
+        validate(review);
         return reviewDao.save(review);
     }
 
     @Override
     public Review update(Review review) {
+        validate(review);
         return reviewDao.update(review);
     }
 
@@ -65,5 +73,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteById(Long id) {
         reviewDao.deleteById(id);
+    }
+
+    private void validate(Review review) {
+        //проверка пользователя
+        userService.getById(review.getUserId());
+        //проверка фильм
+        filmService.getById(review.getFilmId());
     }
 }
