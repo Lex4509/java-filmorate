@@ -2,13 +2,16 @@ delete from friendship;
 delete from film_like;
 delete from users;
 delete from FILM_GENRE;
+delete from FILM_DIRECTOR;
 delete from GENRE;
+delete from DIRECTOR;
 delete from FILM;
 delete from MPA;
 
 ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1;
 ALTER TABLE film ALTER COLUMN film_id RESTART WITH 1;
 ALTER TABLE GENRE ALTER COLUMN genre_id RESTART WITH 1;
+ALTER TABLE DIRECTOR ALTER COLUMN director_id RESTART WITH 1;
 ALTER TABLE MPA ALTER COLUMN mpa_id RESTART WITH 1;
 
 MERGE INTO genre KEY (genre_id) VALUES (1, 'Комедия');

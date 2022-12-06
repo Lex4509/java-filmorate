@@ -19,4 +19,7 @@ public interface FilmDao {
     Film update(Film film);
 
     void deleteById(Long id);
+
+    List<Film> getDirectorFilmsSortedByYear(long directorId);
+    List<Film> getDirectorFilmsSortedByLike(long directorId);
 }

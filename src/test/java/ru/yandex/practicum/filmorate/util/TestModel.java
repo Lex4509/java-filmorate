@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.util;
 
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
@@ -29,5 +30,10 @@ public final class TestModel {
                 .name("Test Name")
                 .birthday(LocalDate.now().minusYears(25))
                 .build();
+    }
+
+    public static Director getValidDirector(){
+        return Director.builder().id(1L)
+                .name("TestDirector").build();
     }
 }
