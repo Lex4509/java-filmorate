@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Review;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
