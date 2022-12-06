@@ -9,10 +9,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> findAll() {
         final var sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, this::mapRowToUser);
+        return jdbcTemplate.query(sql, new UserMapper());
     }
 
     @Override
@@ -34,7 +33,7 @@ public class UserDaoImpl implements UserDao {
         final var namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         final var sql = "SELECT * FROM users WHERE user_id IN (:ids)";
 
-        return namedJdbcTemplate.query(sql, parameters, this::mapRowToUser);
+        return namedJdbcTemplate.query(sql, parameters, new UserMapper());
     }
 
     @Override
@@ -42,7 +41,7 @@ public class UserDaoImpl implements UserDao {
         final var sql = "SELECT * FROM users WHERE user_id = ?";
 
         try {
-            return jdbcTemplate.queryForObject(sql, this::mapRowToUser, id);
+            return (User) jdbcTemplate.queryForObject(sql, new UserMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -84,15 +83,5 @@ public class UserDaoImpl implements UserDao {
     public void deleteById(Long id) {
         final var sql = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
-        return User.builder()
-                .id(rs.getLong("user_id"))
-                .email(rs.getString("email"))
-                .login(rs.getString("login"))
-                .name(rs.getString("name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
-                .build();
     }
 }
