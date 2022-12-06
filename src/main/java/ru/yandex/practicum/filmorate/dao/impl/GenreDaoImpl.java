@@ -40,7 +40,7 @@ public class GenreDaoImpl implements GenreDao {
         final String sql = "SELECT * FROM genre WHERE genre_id = ?";
 
         try {
-            return (Genre) jdbcTemplate.queryForObject(sql, new GenreMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new GenreMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

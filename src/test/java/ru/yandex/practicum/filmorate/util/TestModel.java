@@ -34,11 +34,11 @@ public final class TestModel {
     }
 
     public static Review getValidReview() {
-        return new Review(1l, "good film", true, 1L, 1L, 0);
+        return new Review(1L, "good film", true, 1L, 1L, 0);
+    }
 
     public static Director getValidDirector(){
         return Director.builder().id(1L)
                 .name("TestDirector").build();
-
     }
 }

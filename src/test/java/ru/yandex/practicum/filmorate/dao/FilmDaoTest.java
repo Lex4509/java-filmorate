@@ -66,17 +66,6 @@ public class FilmDaoTest {
 
     @Test
     @Order(4)
-    public void testFindAllWithLimit() {
-        List<Film> films = filmDao.findAllWithLimit(1);
-
-        assertThat(films)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(1);
-    }
-
-    @Test
-    @Order(5)
     public void testFindByIds() {
         List<Film> films = filmDao.findByIds(List.of(1L, 2L));
 
@@ -93,7 +82,7 @@ public class FilmDaoTest {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void testFindById() {
         Film film = filmDao.findById(1L);
 
@@ -103,7 +92,7 @@ public class FilmDaoTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     public void testDeleteById() {
         filmDao.deleteById(1L);
 

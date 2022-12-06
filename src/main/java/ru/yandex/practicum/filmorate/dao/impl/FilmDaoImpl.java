@@ -29,15 +29,6 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public List<Film> findAllWithLimit(Integer limit) {
-        final var sql = "SELECT * " +
-                "FROM film " +
-                "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
-                "LIMIT ?";
-        return jdbcTemplate.query(sql, new FilmMapper(), limit);
-    }
-
-    @Override
     public List<Film> findByIds(List<Long> filmsId) {
         final SqlParameterSource parameters = new MapSqlParameterSource("ids", filmsId);
         final var namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
@@ -57,7 +48,7 @@ public class FilmDaoImpl implements FilmDao {
                 "WHERE film_id = ?";
 
         try {
-            return (Film) jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

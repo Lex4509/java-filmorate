@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
         final var sql = "SELECT * FROM users WHERE user_id = ?";
 
         try {
-            return (User) jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

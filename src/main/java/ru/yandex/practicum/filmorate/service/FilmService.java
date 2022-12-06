@@ -11,7 +11,7 @@ public interface FilmService {
 
     Film getById(Long id);
 
-    List<Film> getMostLikedFilms(Integer count);
+    List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
 
     Film save(Film film);
 

@@ -6,9 +6,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserMapper implements RowMapper {
+public class UserMapper implements RowMapper<User> {
     @Override
-    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         return User.builder()
                 .id(rs.getLong("user_id"))
                 .email(rs.getString("email"))

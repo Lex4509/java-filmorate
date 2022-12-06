@@ -2,13 +2,12 @@ package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.exception.InvalidStatementException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.service.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import static ru.yandex.practicum.filmorate.util.ExceptionThrowHandler.*;
 public class FilmServiceImpl implements FilmService {
 
     private final FilmDao filmDao;
-    private final DirectorDao directorDao;
     private final FilmLikeService filmLikeService;
     private final UserServiceImpl userService;
     private final FilmGenreService filmGenreService;
@@ -31,8 +29,8 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<Film> getAll() {
         return filmDao.findAll().stream()
-                .map(this::setGenres)
-                .map(this::setDirectors)
+                .peek(this::setGenres)
+                .peek(this::setDirectors)
                 .collect(Collectors.toList());
     }
 
@@ -48,19 +46,16 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> getMostLikedFilms(Integer count) {
-        List<Long> filmsId = filmLikeService.getMostLikedFilms(count);
-        List<Film> films;
+    public List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId) {
+        List<Film> films = filmLikeService.getMostLikedFilms(count, year, genreId);
 
-        if (filmsId.isEmpty()) {
-            films = filmDao.findAllWithLimit(count);
-        } else {
-            films = filmDao.findByIds(filmsId);
+        if (films.isEmpty()) {
+            return new ArrayList<>();
         }
 
         return films.stream()
-                .map(this::setGenres)
-                .map(this::setDirectors)
+                .peek(this::setGenres)
+                .peek(this::setDirectors)
                 .collect(Collectors.toList());
     }
 
@@ -77,10 +72,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        final var film = getById(filmId);
-        final var user = userService.getById(userId);
-        throwExceptionIfFilmNotExists(film);
-        throwExceptionIfUserNotExists(user);
+        getById(filmId);
+        userService.getById(userId);
 
         filmLikeService.like(filmId, userId);
     }
@@ -106,10 +99,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-        final var film = getById(filmId);
-        final var user = userService.getById(userId);
-        throwExceptionIfFilmNotExists(film);
-        throwExceptionIfUserNotExists(user);
+        getById(filmId);
+        userService.getById(userId);
 
         filmLikeService.dislike(filmId, userId);
     }
@@ -117,22 +108,20 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<Film> getDirectorFilmsSorted(long directorId, String sortBy) {
         throwExceptionIfDirectorNotExists(directorService.getById(directorId));
-            if (sortBy.equals("year")) {
-                return filmDao.getDirectorFilmsSortedByYear(directorId).stream()
-                        .map(this::setGenres)
-                        .map(this::setDirectors)
-                        .collect(Collectors.toList());
-            }
-            else if (sortBy.equals("likes")) {
-                return filmDao.getDirectorFilmsSortedByLike(directorId).stream()
-                        .map((this::setGenres))
-                        .map(this::setDirectors)
-                        .collect(Collectors.toList());
-            }
-            else throw new InvalidStatementException("Invalid sort parameter");
+        if (sortBy.equals("year")) {
+            return filmDao.getDirectorFilmsSortedByYear(directorId).stream()
+                    .peek(this::setGenres)
+                    .peek(this::setDirectors)
+                    .collect(Collectors.toList());
+        } else if (sortBy.equals("likes")) {
+            return filmDao.getDirectorFilmsSortedByLike(directorId).stream()
+                    .peek(this::setGenres)
+                    .peek(this::setDirectors)
+                    .collect(Collectors.toList());
+        } else throw new InvalidStatementException("Invalid sort parameter");
     }
 
-    private Film setGenres(Film film) {
+    private void setGenres(Film film) {
         List<Long> genreIds = filmGenreService.getByFilmId(film.getId())
                 .stream()
                 .map(FilmGenre::getGenreId)
@@ -140,7 +129,6 @@ public class FilmServiceImpl implements FilmService {
 
         List<Genre> genres = genreService.getByIds(genreIds);
         film.setGenres(genres);
-        return film;
     }
 
     private void addGenres(Film film) {
@@ -153,7 +141,7 @@ public class FilmServiceImpl implements FilmService {
         filmGenreService.addGenresToFilm(film.getId(), genresId);
     }
 
-    private Film setDirectors(Film film) {
+    private void setDirectors(Film film) {
         List<Long> directorIds = filmDirectorService.getByFilmId(film.getId())
                 .stream()
                 .map(FilmDirector::getDirectorId)
@@ -161,7 +149,6 @@ public class FilmServiceImpl implements FilmService {
 
         List<Director> directors = directorService.getByIds(directorIds);
         film.setDirectors(directors);
-        return film;
     }
 
     private void addDirectors(Film film) {
