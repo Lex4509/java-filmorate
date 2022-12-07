@@ -2,13 +2,17 @@ package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.service.FriendshipService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final FriendshipService friendshipService;
+    private final FeedService feedService;
 
     @Override
     public List<User> getAll() {
@@ -98,5 +103,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteFriend(Long userId, Long friendId) {
         friendshipService.deleteFriendship(userId, friendId);
+    }
+
+    @Override
+    public List<Event> getFeed(@PathVariable @NotNull Long id) {
+        throwExceptionIfUserNotExists(getById(id));
+
+        return feedService.getUserFeed(id);
     }
 }

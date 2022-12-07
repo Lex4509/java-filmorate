@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface UserService {
@@ -23,4 +26,6 @@ public interface UserService {
     void deleteById(Long id);
 
     void deleteFriend(Long userId, Long friendId);
+
+    List<Event> getFeed(@PathVariable @NotNull Long id);
 }

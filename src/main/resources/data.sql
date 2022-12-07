@@ -7,6 +7,7 @@ delete from GENRE;
 delete from DIRECTOR;
 delete from FILM;
 delete from MPA;
+delete from events;
 
 --удаление reviews
 --начало
@@ -19,6 +20,7 @@ ALTER TABLE film ALTER COLUMN film_id RESTART WITH 1;
 ALTER TABLE GENRE ALTER COLUMN genre_id RESTART WITH 1;
 ALTER TABLE DIRECTOR ALTER COLUMN director_id RESTART WITH 1;
 ALTER TABLE MPA ALTER COLUMN mpa_id RESTART WITH 1;
+ALTER TABLE events ALTER COLUMN event_id RESTART WITH 1;
 
 --перезапуск нумератора id для reviews
 --начало

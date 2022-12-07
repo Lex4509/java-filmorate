@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.event.Event;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -57,6 +58,10 @@ public class UserController {
         userService.deleteFriend(userId, friendId);
     }
 
+    @GetMapping("/{id}/feed")
+    public List<Event> getFeed(@PathVariable @NotNull Long id) {
+        return userService.getFeed(id);
+    }
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUserById(@PathVariable Long userId) {
