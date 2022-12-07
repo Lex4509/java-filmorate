@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FriendshipService;
@@ -87,7 +88,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
-        userDao.deleteById(id);
+        try {
+            userDao.deleteById(id);
+        } catch (NotFoundException e) {
+            e.getMessage();
+        }
     }
 
     @Override
