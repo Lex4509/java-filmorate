@@ -1,8 +1,10 @@
 # java-filmorate
+<img width="682" alt="Снимок экрана 2022-12-07 в 19 42 37" src="https://user-images.githubusercontent.com/106984793/206292040-f7236686-57be-4e51-b95f-33250f4cf0fd.png">
 
 ---
 
 ![This is an image](scheme.png)
+
 
 ## Примеры запросов:
 ### Найти пользователя
