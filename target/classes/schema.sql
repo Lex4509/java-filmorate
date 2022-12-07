@@ -60,7 +60,6 @@ CREATE TABLE IF NOT EXISTS friendship
     FOREIGN KEY (friend_id) REFERENCES users (user_id) ON DELETE CASCADE
 );
 
-<<<<<<< HEAD
 CREATE TYPE IF NOT EXISTS event_types as enum ('LIKE', 'REVIEW', 'FRIEND');
 
 CREATE TYPE IF NOT EXISTS operations as enum ('REMOVE', 'ADD', 'UPDATE');
@@ -69,12 +68,12 @@ CREATE TABLE IF NOT EXISTS events
 (
     event_id     IDENTITY NOT NULL PRIMARY KEY,
     user_id      BIGINT NOT NULL,
-    event_time   TIMESTAMP NOT NULL,
+    event_time   BIGINT NOT NULL,
     event_type   event_types,
     operation    operations,
     entity_id     BIGINT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
-=======
+);
 --review
 CREATE TABLE IF NOT EXISTS Reviews
 (
@@ -93,5 +92,19 @@ CREATE TABLE IF NOT EXISTS Reviews_likes
     user_id   LONG REFERENCES Users (user_id) ON DELETE CASCADE,
     is_like   BOOLEAN,
     PRIMARY KEY (review_id, user_id)
->>>>>>> origin/develop
 );
+
+CREATE TABLE IF NOT EXISTS director
+(
+    director_id IDENTITY NOT NULL PRIMARY KEY,
+    name     VARCHAR(120)
+    );
+
+CREATE TABLE IF NOT EXISTS film_director
+(
+    film_id  BIGINT NOT NULL,
+    director_id BIGINT NOT NULL,
+    PRIMARY KEY (film_id, director_id),
+    FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE CASCADE,
+    FOREIGN KEY (director_id) REFERENCES director (director_id) ON DELETE CASCADE
+    );
