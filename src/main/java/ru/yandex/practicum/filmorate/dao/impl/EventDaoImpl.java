@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -13,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.event.Operation;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -42,8 +44,7 @@ public class EventDaoImpl implements EventDao {
             return stmt;
         }, keyHolder);
 
-        addIntoFeed(userId, getLastId());
-
+        addIntoFeed(userId, Objects.requireNonNull(keyHolder.getKey()).longValue());
     }
 
     private void addIntoFeed(Long userId, Long eventId) {
@@ -57,13 +58,6 @@ public class EventDaoImpl implements EventDao {
             stmt.setLong(2, eventId);
             return stmt;
         }, keyHolder);
-    }
-
-    private Long getLastId() {
-        SqlRowSet idRows = jdbcTemplate.queryForRowSet("SELECT * FROM event " +
-                "GROUP BY event_id ORDER BY event_id DESC LIMIT 1;");
-        idRows.next();
-        return idRows.getLong(1);
     }
 
     private Event mapRowToEvent(ResultSet rs, int rowNum) throws SQLException {
