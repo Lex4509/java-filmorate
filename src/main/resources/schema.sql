@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS events
 (
     event_id     IDENTITY NOT NULL PRIMARY KEY,
     user_id      BIGINT NOT NULL,
-    event_time   TIMESTAMP NOT NULL,
+    event_time   BIGINT NOT NULL,
     event_type   event_types,
     operation    operations,
     entity_id     BIGINT NOT NULL,

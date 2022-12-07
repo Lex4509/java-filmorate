@@ -92,6 +92,7 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
 
     @Override
     public void delete(Long filmId, Long userId) {
+        eventDao.addEvent(userId, EventType.LIKE, Operation.REMOVE, filmId);
         final var sql = "DELETE FROM film_like " +
                 "WHERE film_id = ? AND user_id = ?";
         jdbcTemplate.update(sql, filmId, userId);
