@@ -8,6 +8,7 @@ import java.util.List;
 public interface FilmLikeDao {
 
     List<FilmLike> findAllFilmLike();
+
     List<Film> findMostLikedFilms(int limit);
 
     List<Film> findMostLikedFilmsByYear(Integer count, Integer year);
@@ -15,6 +16,8 @@ public interface FilmLikeDao {
     List<Film> findMostLikedFilmsByGenre(Integer count, Long genreId);
 
     List<Film> findMostLikedFilmsByYearAndGenre(Integer count, Integer year, Long genreId);
+
+    List<Long> findCommonFilmsIdByLikes(Long id);
 
     void add(Long filmId, Long userId);
 
