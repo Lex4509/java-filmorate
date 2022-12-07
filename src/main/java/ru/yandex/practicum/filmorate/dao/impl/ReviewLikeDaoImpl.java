@@ -43,18 +43,18 @@ public class ReviewLikeDaoImpl implements ReviewLikeDao {
         jdbcTemplate.update(sqlQuery, reviewId, userId, isLike);
         updateRateReview(reviewId);
     }
-
+    
     private void updateRateReview(long reviewId) {
-        String sqlQuery = "update REVIEWS set USEFUL = " +
-                "(select sum(count) from (select count(REVIEW_ID) as count " +
-                "from REVIEWS_LIKES AS likes " +
-                "where likes.REVIEW_ID = ? and IS_LIKE = true " +
-                "union all " +
-                "select -count(REVIEW_ID) as count " +
-                "from REVIEWS_LIKES as dislike " +
-                "where dislike.REVIEW_ID = ? " +
-                "and IS_LIKE = false)) where REVIEW_ID = ?";
-        jdbcTemplate.update(sqlQuery, reviewId, reviewId, reviewId);
+        String sqlQuery = "update REVIEWS as r set USEFUL = " +
+                "(select nvl(sum(case " +
+                "           when IS_LIKE is true " +
+                "           then 1 " +
+                "           else -1 " +
+                "           end),0) " +
+                "from REVIEWS_LIKES as rl " +
+                "where rl.REVIEW_ID = r.REVIEW_ID) " +
+                "where r.REVIEW_ID = ?";
+        jdbcTemplate.update(sqlQuery, reviewId);
     }
 
 }
