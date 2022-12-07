@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -12,6 +11,8 @@ public interface FilmService {
     Film getById(Long id);
 
     List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
+
+    List<Film> getRecommendedFilms(Long id);
 
     Film save(Film film);
 

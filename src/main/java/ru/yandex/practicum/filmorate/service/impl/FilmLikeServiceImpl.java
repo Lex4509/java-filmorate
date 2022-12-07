@@ -29,6 +29,11 @@ public class FilmLikeServiceImpl implements FilmLikeService {
     }
 
     @Override
+    public List<Long> getCommonFilmsIdByLikes(Long id) {
+        return filmLikeDao.findCommonFilmsIdByLikes(id);
+    }
+
+    @Override
     public void like(Long filmId, Long userId) {
         filmLikeDao.add(filmId, userId);
     }

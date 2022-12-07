@@ -5,12 +5,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.dao.FilmLikeDao;
-import ru.yandex.practicum.filmorate.model.event.EventType;
-import ru.yandex.practicum.filmorate.model.event.Operation;
 import ru.yandex.practicum.filmorate.mapper.FilmLikeMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmLike;
+import ru.yandex.practicum.filmorate.model.event.EventType;
+import ru.yandex.practicum.filmorate.model.event.Operation;
 
 import java.util.List;
 
@@ -80,6 +80,19 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
                 "ORDER BY COUNT(fl.user_id) DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sql, new FilmMapper(), year, genreId, count);
+    }
+
+    @Override
+    public List<Long> findCommonFilmsIdByLikes(Long id) {
+        final var sql = "SELECT DISTINCT fl2.film_id " +
+                "FROM film_like AS fl " +
+                "JOIN film_like AS fl2 " +
+                "WHERE fl.user_id = ? AND fl2.user_id <> ? " +
+                "EXCEPT" +
+                "   (SELECT film_id " +
+                "    FROM film_like " +
+                "    WHERE user_id = ?)";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("film_id"), id, id, id);
     }
 
     @Override
