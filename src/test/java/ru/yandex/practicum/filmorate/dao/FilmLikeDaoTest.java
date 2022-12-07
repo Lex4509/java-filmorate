@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmLike;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -41,9 +42,9 @@ public class FilmLikeDaoTest {
 
         filmLikeDao.add(1L, 1L);
 
-        List<Long> ids = filmLikeDao.findMostLikedFilms(10);
+        List<FilmLike> filmsLikes = filmLikeDao.findAllFilmLike();
 
-        assertThat(ids)
+        assertThat(filmsLikes)
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1);
@@ -57,9 +58,9 @@ public class FilmLikeDaoTest {
 
         filmLikeDao.add(2L, 1L);
 
-        List<Long> ids = filmLikeDao.findMostLikedFilms(10);
+        List<Film> films = filmLikeDao.findMostLikedFilms(10);
 
-        assertThat(ids)
+        assertThat(films)
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(2);
@@ -70,9 +71,9 @@ public class FilmLikeDaoTest {
     public void testDelete() {
         filmLikeDao.delete(1L, 1L);
 
-        List<Long> ids = filmLikeDao.findMostLikedFilms(10);
+        List<FilmLike> filmsLikes = filmLikeDao.findAllFilmLike();
 
-        assertThat(ids)
+        assertThat(filmsLikes)
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1);

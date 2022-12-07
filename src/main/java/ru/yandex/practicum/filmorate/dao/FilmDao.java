@@ -8,8 +8,6 @@ public interface FilmDao {
 
     List<Film> findAll();
 
-    List<Film> findAllWithLimit(Integer limit);
-
     List<Film> findByIds(List<Long> filmsId);
 
     Film findById(Long id);

@@ -41,7 +41,7 @@ public class DirectorDaoImpl implements DirectorDao {
         final String sql = "SELECT * FROM director WHERE director_id = ?";
 
         try {
-            return (Director) jdbcTemplate.queryForObject(sql, new DirectorMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new DirectorMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

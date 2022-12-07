@@ -27,7 +27,7 @@ public class MpaDaoImpl implements MpaDao {
         final String sql = "SELECT * FROM mpa WHERE mpa_id = ?";
 
         try {
-            return (Mpa) jdbcTemplate.queryForObject(sql, new MpaMapper(), id);
+            return jdbcTemplate.queryForObject(sql, new MpaMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
