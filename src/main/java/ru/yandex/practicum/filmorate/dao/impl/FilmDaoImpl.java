@@ -1,42 +1,39 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
+
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private final MpaDao mpaDao;
 
     @Override
     public List<Film> findAll() {
         final var sql = "SELECT * " +
                 "FROM film " +
                 "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id";
-        return jdbcTemplate.query(sql, this::mapRowToFilm);
-    }
-
-    @Override
-    public List<Film> findAllWithLimit(Integer limit) {
-        final var sql = "SELECT * " +
-                "FROM film " +
-                "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
-                "LIMIT ?";
-        return jdbcTemplate.query(sql, this::mapRowToFilm, limit);
+        return jdbcTemplate.query(sql, new FilmMapper());
     }
 
     @Override
@@ -48,7 +45,7 @@ public class FilmDaoImpl implements FilmDao {
                 "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
                 "WHERE film_id IN (:ids)";
 
-        return namedJdbcTemplate.query(sql, parameters, this::mapRowToFilm);
+        return namedJdbcTemplate.query(sql, parameters, new FilmMapper());
     }
 
     @Override
@@ -59,7 +56,7 @@ public class FilmDaoImpl implements FilmDao {
                 "WHERE film_id = ?";
 
         try {
-            return jdbcTemplate.queryForObject(sql, this::mapRowToFilm, id);
+            return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -106,20 +103,43 @@ public class FilmDaoImpl implements FilmDao {
         jdbcTemplate.update(sql, id);
     }
 
-    private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
-        final var mpa = Mpa.builder()
-                .id(rs.getLong("mpa.mpa_id"))
-                .name(rs.getString("mpa.name"))
-                .build();
-
-        return Film.builder()
-                .id(rs.getLong("film_id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(rs.getDate("release_date").toLocalDate())
-                .duration(rs.getInt("duration"))
-                .mpa(mpa)
-                .rate(rs.getInt("rate"))
-                .build();
+    @Override
+    public List<Film> getDirectorFilmsSortedByYear(long directorId) {
+        final var sql = "SELECT * " +
+                "FROM film as f " +
+                "LEFT JOIN mpa ON f.mpa_id = mpa.mpa_id " +
+                "JOIN film_director as fd on f.film_id = fd.film_id " +
+                "WHERE fd.director_id = ? " +
+                "ORDER BY f.release_date";
+        return jdbcTemplate.query(sql, new FilmMapper(), directorId);
     }
+
+    @Override
+    public List<Film> getDirectorFilmsSortedByLike(long directorId) {
+        final var sql = "SELECT * " +
+                "FROM film as f " +
+                "LEFT JOIN mpa ON f.mpa_id = mpa.mpa_id " +
+                "JOIN film_director as fd on f.film_id = fd.film_id " +
+                "LEFT JOIN film_like as fl on f.film_id = fl.film_id " +
+                "GROUP BY f.film_id " +
+                "HAVING fd.director_id = ? " +
+                "ORDER BY COUNT(f.film_id) DESC";
+        return jdbcTemplate.query(sql, new FilmMapper(), directorId);
+    }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+
+        String sql = "SELECT film_id from film_like WHERE user_id = ?" +
+                "INTERSECT " +
+                "SELECT film_id from film_like WHERE user_id = ? ";
+        List<Long> listId = new ArrayList<>();
+        SqlRowSet idRow = jdbcTemplate.queryForRowSet(sql, userId, friendId);
+        while (idRow.next()) {
+            listId.add(idRow.getLong("film_id"));
+        }
+
+        return findByIds(listId);
+    }
+
 }

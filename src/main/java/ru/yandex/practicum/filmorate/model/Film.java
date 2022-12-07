@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.DateConstraint;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Film {
 
     private Long id;
@@ -38,9 +40,13 @@ public class Film {
     private int rate;
 
     private List<Genre> genres;
+    private List<Director> directors;
 
     public void setGenres(List<Genre> newGenres) {
         genres = new ArrayList<>(newGenres);
+    }
+    public void setDirectors(List<Director> newDirectors) {
+        directors = new ArrayList<>(newDirectors);
     }
 
     public Map<String, Object> toMap() {

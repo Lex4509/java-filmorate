@@ -8,8 +8,6 @@ public interface FilmDao {
 
     List<Film> findAll();
 
-    List<Film> findAllWithLimit(Integer limit);
-
     List<Film> findByIds(List<Long> filmsId);
 
     Film findById(Long id);
@@ -19,4 +17,9 @@ public interface FilmDao {
     Film update(Film film);
 
     void deleteById(Long id);
+
+
+    List<Film> getCommonFilms(Long userId, Long friendId);
+    List<Film> getDirectorFilmsSortedByYear(long directorId);
+    List<Film> getDirectorFilmsSortedByLike(long directorId);
 }

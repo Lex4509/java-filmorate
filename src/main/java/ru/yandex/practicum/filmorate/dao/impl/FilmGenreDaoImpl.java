@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
+import ru.yandex.practicum.filmorate.mapper.FilmGenreMapper;
 import ru.yandex.practicum.filmorate.model.FilmGenre;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -23,7 +22,7 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
                 "FROM film_genre " +
                 "WHERE film_id = ? " +
                 "ORDER BY genre_id";
-        return jdbcTemplate.query(sql, this::mapRowToFilmGenre, filmId);
+        return jdbcTemplate.query(sql, new FilmGenreMapper(), filmId);
     }
 
     @Override
@@ -45,12 +44,5 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
     public void delete(Long filmId) {
         final var sql = "DELETE FROM film_genre WHERE film_id = ?";
         jdbcTemplate.update(sql, filmId);
-    }
-
-    private FilmGenre mapRowToFilmGenre(ResultSet rs, int rowNum) throws SQLException {
-        return FilmGenre.builder()
-                .filmId(rs.getLong("film_id"))
-                .genreId(rs.getLong("genre_id"))
-                .build();
     }
 }
