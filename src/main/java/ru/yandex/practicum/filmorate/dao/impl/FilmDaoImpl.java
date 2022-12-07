@@ -1,24 +1,32 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
+
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private final MpaDao mpaDao;
 
     @Override
     public List<Film> findAll() {
@@ -118,4 +126,20 @@ public class FilmDaoImpl implements FilmDao {
                 "ORDER BY COUNT(f.film_id) DESC";
         return jdbcTemplate.query(sql, new FilmMapper(), directorId);
     }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+
+        String sql = "SELECT film_id from film_like WHERE user_id = ?" +
+                "INTERSECT " +
+                "SELECT film_id from film_like WHERE user_id = ? ";
+        List<Long> listId = new ArrayList<>();
+        SqlRowSet idRow = jdbcTemplate.queryForRowSet(sql, userId, friendId);
+        while (idRow.next()) {
+            listId.add(idRow.getLong("film_id"));
+        }
+
+        return findByIds(listId);
+    }
+
 }

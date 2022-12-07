@@ -18,6 +18,8 @@ public interface FilmDao {
 
     void deleteById(Long id);
 
+
+    List<Film> getCommonFilms(Long userId, Long friendId);
     List<Film> getDirectorFilmsSortedByYear(long directorId);
     List<Film> getDirectorFilmsSortedByLike(long directorId);
 }

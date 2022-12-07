@@ -139,6 +139,11 @@ public class FilmServiceImpl implements FilmService {
         filmGenreService.addGenresToFilm(film.getId(), genresId);
     }
 
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        return filmDao.getCommonFilms(userId, friendId);
+    }
+
     private void setDirectors(Film film) {
         List<Long> directorIds = filmDirectorService.getByFilmId(film.getId())
                 .stream()
