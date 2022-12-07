@@ -12,6 +12,8 @@ public interface FilmService {
 
     List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
 
+    List<Film> getRecommendedFilms(Long id);
+
     Film save(Film film);
 
     void addLike(Long filmId, Long userId);

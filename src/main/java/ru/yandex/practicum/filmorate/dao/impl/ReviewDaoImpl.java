@@ -6,9 +6,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.model.event.EventType;
+import ru.yandex.practicum.filmorate.model.event.Operation;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -19,6 +22,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final BeanPropertyRowMapper reviewMapper = new BeanPropertyRowMapper<>(Review.class);
+    private final EventDao eventDao;
 
 
     @Override
@@ -36,6 +40,9 @@ public class ReviewDaoImpl implements ReviewDao {
             return statement;
         }, keyHolder);
         review.setReviewId(keyHolder.getKey().longValue());
+
+        eventDao.addEvent(review.getUserId(), EventType.REVIEW, Operation.ADD, keyHolder.getKey().longValue());
+
         return review;
 
     }
@@ -45,6 +52,11 @@ public class ReviewDaoImpl implements ReviewDao {
         final var sql = "UPDATE reviews SET " + "content = ?, " + "is_positive = ? " + "WHERE review_id = ?";
 
         jdbcTemplate.update(sql, review.getContent(), review.getIsPositive(), review.getReviewId());
+
+        try {
+            eventDao.addEvent(findById(review.getReviewId()).getUserId(), EventType.REVIEW, Operation.UPDATE,
+                    review.getReviewId());
+        } catch (NotFoundException ignored) {}
 
         return review;
     }
@@ -73,6 +85,10 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public void deleteById(Long id) {
+
+        try {
+            eventDao.addEvent(findById(id).getUserId(), EventType.REVIEW, Operation.REMOVE, findById(id).getReviewId());
+        } catch (NotFoundException ignored) {}
         String sqlQuery = "delete from reviews where REVIEW_ID = ?";
         jdbcTemplate.update(sqlQuery, id);
     }

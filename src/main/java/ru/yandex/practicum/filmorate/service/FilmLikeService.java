@@ -8,7 +8,11 @@ public interface FilmLikeService {
 
     List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
 
+    List<Long> getCommonFilmsIdByLikes(Long id);
+
     void like(Long filmId, Long userId);
 
     void dislike(Long filmId, Long userId);
+
+
 }

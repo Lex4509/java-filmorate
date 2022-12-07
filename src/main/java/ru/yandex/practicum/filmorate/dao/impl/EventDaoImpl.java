@@ -26,7 +26,7 @@ public class EventDaoImpl implements EventDao {
     public void addEvent(Long userId, EventType eventType, Operation operation, Long entityId) {
         String sqlQuery = "INSERT INTO events(user_id, event_time, event_type, operation, entity_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, userId, new Timestamp(System.currentTimeMillis()),eventType.toString(),
+        jdbcTemplate.update(sqlQuery, userId, System.currentTimeMillis(),eventType.toString(),
                 operation.toString(), entityId);
     }
 
@@ -34,7 +34,7 @@ public class EventDaoImpl implements EventDao {
         return Event.builder()
                 .eventId(rs.getLong("event_id"))
                 .userId(rs.getLong("user_id"))
-                .timestamp(rs.getTimestamp("event_time"))
+                .timestamp(rs.getLong("event_time"))
                 .eventType(EventType.valueOf(rs.getString("event_type")))
                 .operation(Operation.valueOf(rs.getString("operation")))
                 .entityId(rs.getLong("entity_id"))

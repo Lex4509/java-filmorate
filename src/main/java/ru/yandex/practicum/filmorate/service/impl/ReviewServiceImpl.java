@@ -18,7 +18,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserService userService;
     private final FilmService filmService;
 
-    public ReviewServiceImpl(ReviewDao reviewDao, ReviewLikeDao reviewLikeDao, UserService userService, FilmService filmService) {
+    public ReviewServiceImpl(ReviewDao reviewDao, ReviewLikeDao reviewLikeDao, UserService userService,
+                             FilmService filmService) {
         this.reviewDao = reviewDao;
         this.reviewLikeDao = reviewLikeDao;
         this.userService = userService;

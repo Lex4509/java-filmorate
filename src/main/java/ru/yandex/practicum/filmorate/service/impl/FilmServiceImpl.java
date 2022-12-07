@@ -58,6 +58,15 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
+    public List<Film> getRecommendedFilms(Long id) {
+        List<Long> commonFilmsId = filmLikeService.getCommonFilmsIdByLikes(id);
+        return filmDao.findByIds(commonFilmsId).stream()
+                .peek(this::setGenres)
+                .peek(this::setDirectors)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Film save(final Film film) {
         final var filmForCheck = filmDao.findById(film.getId());
         throwExceptionIfFilmAlreadyExists(filmForCheck);
