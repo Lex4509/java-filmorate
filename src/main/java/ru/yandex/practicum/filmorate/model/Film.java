@@ -40,9 +40,13 @@ public class Film {
     private int rate;
 
     private List<Genre> genres;
+    private List<Director> directors;
 
     public void setGenres(List<Genre> newGenres) {
         genres = new ArrayList<>(newGenres);
+    }
+    public void setDirectors(List<Director> newDirectors) {
+        directors = new ArrayList<>(newDirectors);
     }
 
     public Map<String, Object> toMap() {

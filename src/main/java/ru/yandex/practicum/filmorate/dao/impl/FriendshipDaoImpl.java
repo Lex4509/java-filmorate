@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FriendshipDao;
+import ru.yandex.practicum.filmorate.mapper.FriendShipMapper;
 import ru.yandex.practicum.filmorate.model.Friendship;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -19,7 +18,7 @@ public class FriendshipDaoImpl implements FriendshipDao {
     @Override
     public List<Friendship> findFriendshipsByUserId(Long id) {
         final var sql = "SELECT * FROM friendship WHERE user_id = ?";
-        return jdbcTemplate.query(sql, this::mapRowToFriendship, id);
+        return jdbcTemplate.query(sql, new FriendShipMapper(), id);
     }
 
     @Override
@@ -35,13 +34,5 @@ public class FriendshipDaoImpl implements FriendshipDao {
         final var sql = "DELETE FROM friendship WHERE user_id = ? AND friend_id = ?";
 
         jdbcTemplate.update(sql, userId, friendId);
-    }
-
-    private Friendship mapRowToFriendship(ResultSet rs, int rowNum) throws SQLException {
-        return Friendship.builder()
-                .userId(rs.getLong("user_id"))
-                .friendId(rs.getLong("friend_id"))
-                .status(rs.getBoolean("status"))
-                .build();
     }
 }

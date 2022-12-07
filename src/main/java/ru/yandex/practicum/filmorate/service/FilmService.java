@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface FilmService {
 
     Film getById(Long id);
 
-    List<Film> getMostLikedFilms(Integer count);
+    List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
 
     Film save(Film film);
 
@@ -23,4 +24,5 @@ public interface FilmService {
     void deleteLike(Long filmId, Long userId);
 
     List<Film> getCommonFilms(Long userId, Long friendId);
+    List<Film> getDirectorFilmsSorted (long directorId, String sortBy);
 }
