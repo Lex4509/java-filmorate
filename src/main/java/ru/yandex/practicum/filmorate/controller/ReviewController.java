@@ -17,7 +17,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService, UserService userService, FilmService filmService) {
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 

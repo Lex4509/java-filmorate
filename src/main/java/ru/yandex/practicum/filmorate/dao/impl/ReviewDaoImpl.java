@@ -21,7 +21,7 @@ import java.util.List;
 public class ReviewDaoImpl implements ReviewDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper reviewMapper = new BeanPropertyRowMapper<>(Review.class);
+    private final BeanPropertyRowMapper<Review> reviewMapper = new BeanPropertyRowMapper<>(Review.class);
     private final EventDao eventDao;
 
 

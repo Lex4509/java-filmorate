@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import ru.yandex.practicum.filmorate.model.Review;
 
 import java.util.List;

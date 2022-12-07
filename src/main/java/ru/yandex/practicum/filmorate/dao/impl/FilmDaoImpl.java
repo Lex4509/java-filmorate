@@ -125,37 +125,43 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public List<Film> searchByTitle(String query) {
         String sqlQuery = "%" + query + "%";
-        final var sql = "SELECT * " +
-                "FROM film " +
+        final var sql = "SELECT film.*, mpa.*, COUNT(FILM_LIKE.USER_ID) " +
+                "FROM FILM " +
                 "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
-                "WHERE film.name ILIKE ? " +
-                "ORDER BY film.rate";
+                "LEFT JOIN film_like ON film.film_id = film_like.film_id " +
+                "WHERE film.name ILIKE ?" +
+                "GROUP BY film.film_id " +
+                "ORDER BY COUNT(FILM_LIKE.USER_ID) DESC";
         return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery);
     }
 
     @Override
     public List<Film> searchByDirector(String query) {
         String sqlQuery = "%" + query + "%";
-        final var sql = "SELECT * " +
-                "FROM film " +
+        final var sql = "SELECT film.*, mpa.*, director.*, COUNT(FILM_LIKE.USER_ID) " +
+                "FROM FILM " +
                 "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
                 "LEFT JOIN film_director ON film.film_id = film_director.film_id " +
                 "LEFT JOIN director ON film_director.director_id = director.director_id " +
+                "LEFT JOIN film_like ON film.film_id = film_like.film_id " +
                 "WHERE director.name ILIKE ? " +
-                "ORDER BY film.rate";
+                "GROUP BY film.film_id " +
+                "ORDER BY COUNT(FILM_LIKE.USER_ID) DESC";
         return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery);
     }
 
     @Override
     public List<Film> searchByTitleAndDirector(String query) {
         String sqlQuery = "%" + query + "%";
-        final var sql = "SELECT * " +
-                "FROM film " +
+        final var sql = "SELECT film.*, mpa.*, director.*, COUNT(FILM_LIKE.USER_ID) " +
+                "FROM FILM " +
                 "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
                 "LEFT JOIN film_director ON film.film_id = film_director.film_id " +
                 "LEFT JOIN director ON film_director.director_id = director.director_id " +
+                "LEFT JOIN film_like ON film.film_id = film_like.film_id " +
                 "WHERE film.name ILIKE ? OR director.name ILIKE ? " +
-                "ORDER BY film.rate";
+                "GROUP BY FILM.film_ID " +
+                "ORDER BY COUNT(FILM_LIKE.USER_ID) DESC";
         return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery, sqlQuery);
     }
 

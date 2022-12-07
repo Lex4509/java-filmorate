@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.model.Director;
 
