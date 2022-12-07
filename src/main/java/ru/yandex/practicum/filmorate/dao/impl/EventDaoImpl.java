@@ -2,10 +2,6 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.EventDao;
 import ru.yandex.practicum.filmorate.model.event.Event;
@@ -14,8 +10,6 @@ import ru.yandex.practicum.filmorate.model.event.Operation;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Objects;
-
 @Component
 @RequiredArgsConstructor
 public class EventDaoImpl implements EventDao {
@@ -30,18 +24,10 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public void addEvent(Long userId, EventType eventType, Operation operation, Long entityId) {
-        String sqlQuery = "INSERT INTO event(user_id, event_time, event_type, operation, entity_id) " +
+        String sqlQuery = "INSERT INTO events(user_id, event_time, event_type, operation, entity_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"event_id"});
-            stmt.setLong(1, userId);
-            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
-            stmt.setString(3, eventType.toString());
-            stmt.setString(4, operation.toString());
-            stmt.setLong(5, entityId);
-            return stmt;
-        }, keyHolder);
+        jdbcTemplate.update(sqlQuery, userId, new Timestamp(System.currentTimeMillis()),eventType.toString(),
+                operation.toString(), entityId);
     }
 
     private Event mapRowToEvent(ResultSet rs, int rowNum) throws SQLException {
