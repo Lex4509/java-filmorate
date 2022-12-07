@@ -119,6 +119,30 @@ public class FilmServiceImpl implements FilmService {
         } else throw new InvalidStatementException("Invalid sort parameter");
     }
 
+    @Override
+    public List<Film> searchFilms(String query, String by) {
+        switch (by) {
+            case "title":
+                return filmDao.searchByTitle(query).stream()
+                        .peek(this::setGenres)
+                        .peek(this::setDirectors)
+                        .collect(Collectors.toList());
+            case "director":
+                return filmDao.searchByDirector(query).stream()
+                        .peek(this::setGenres)
+                        .peek(this::setDirectors)
+                        .collect(Collectors.toList());
+            case "director,title":
+            case "title,director":
+                return filmDao.searchByTitleAndDirector(query).stream()
+                        .peek(this::setGenres)
+                        .peek(this::setDirectors)
+                        .collect(Collectors.toList());
+            default:
+                throw new InvalidStatementException("Invalid search parameter");
+        }
+    }
+
     private void setGenres(Film film) {
         List<Long> genreIds = filmGenreService.getByFilmId(film.getId())
                 .stream()

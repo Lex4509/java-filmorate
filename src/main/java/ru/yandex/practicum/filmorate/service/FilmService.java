@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -25,4 +24,5 @@ public interface FilmService {
 
     List<Film> getCommonFilms(Long userId, Long friendId);
     List<Film> getDirectorFilmsSorted (long directorId, String sortBy);
+    List<Film> searchFilms(String query, String by);
 }

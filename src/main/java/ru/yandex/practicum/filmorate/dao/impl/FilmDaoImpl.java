@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -24,9 +22,6 @@ public class FilmDaoImpl implements FilmDao {
 
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private final MpaDao mpaDao;
 
     @Override
     public List<Film> findAll() {
@@ -125,6 +120,43 @@ public class FilmDaoImpl implements FilmDao {
                 "HAVING fd.director_id = ? " +
                 "ORDER BY COUNT(f.film_id) DESC";
         return jdbcTemplate.query(sql, new FilmMapper(), directorId);
+    }
+
+    @Override
+    public List<Film> searchByTitle(String query) {
+        String sqlQuery = "%" + query + "%";
+        final var sql = "SELECT * " +
+                "FROM film " +
+                "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
+                "WHERE film.name ILIKE ? " +
+                "ORDER BY film.rate";
+        return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery);
+    }
+
+    @Override
+    public List<Film> searchByDirector(String query) {
+        String sqlQuery = "%" + query + "%";
+        final var sql = "SELECT * " +
+                "FROM film " +
+                "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
+                "LEFT JOIN film_director ON film.film_id = film_director.film_id " +
+                "LEFT JOIN director ON film_director.director_id = director.director_id " +
+                "WHERE director.name ILIKE ? " +
+                "ORDER BY film.rate";
+        return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery);
+    }
+
+    @Override
+    public List<Film> searchByTitleAndDirector(String query) {
+        String sqlQuery = "%" + query + "%";
+        final var sql = "SELECT * " +
+                "FROM film " +
+                "LEFT JOIN mpa ON film.mpa_id = mpa.mpa_id " +
+                "LEFT JOIN film_director ON film.film_id = film_director.film_id " +
+                "LEFT JOIN director ON film_director.director_id = director.director_id " +
+                "WHERE film.name ILIKE ? OR director.name ILIKE ? " +
+                "ORDER BY film.rate";
+        return jdbcTemplate.query(sql, new FilmMapper(), sqlQuery, sqlQuery);
     }
 
     @Override
