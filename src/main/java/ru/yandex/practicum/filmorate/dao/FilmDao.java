@@ -22,4 +22,7 @@ public interface FilmDao {
     List<Film> getCommonFilms(Long userId, Long friendId);
     List<Film> getDirectorFilmsSortedByYear(long directorId);
     List<Film> getDirectorFilmsSortedByLike(long directorId);
+    List<Film> searchByTitle(String query);
+    List<Film> searchByDirector(String query);
+    List<Film> searchByTitleAndDirector(String query);
 }
