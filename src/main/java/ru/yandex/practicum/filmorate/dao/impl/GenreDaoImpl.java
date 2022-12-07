@@ -8,10 +8,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -26,14 +25,14 @@ public class GenreDaoImpl implements GenreDao {
         final var namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         final var sql = "SELECT * FROM genre WHERE genre_id IN (:ids)";
 
-        return namedJdbcTemplate.query(sql, parameters, this::mapRowToGenre);
+        return namedJdbcTemplate.query(sql, parameters, new GenreMapper());
     }
 
     @Override
     public List<Genre> findAll() {
         final String sql = "SELECT * FROM genre";
 
-        return jdbcTemplate.query(sql, this::mapRowToGenre);
+        return jdbcTemplate.query(sql, new GenreMapper());
     }
 
     @Override
@@ -41,16 +40,9 @@ public class GenreDaoImpl implements GenreDao {
         final String sql = "SELECT * FROM genre WHERE genre_id = ?";
 
         try {
-            return jdbcTemplate.queryForObject(sql, this::mapRowToGenre, id);
+            return (Genre) jdbcTemplate.queryForObject(sql, new GenreMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-    }
-
-    private Genre mapRowToGenre(ResultSet rs, int rowNum) throws SQLException {
-        return Genre.builder()
-                .id(rs.getLong("genre_id"))
-                .name(rs.getString("name"))
-                .build();
     }
 }

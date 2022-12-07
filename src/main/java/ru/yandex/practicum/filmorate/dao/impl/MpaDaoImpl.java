@@ -5,10 +5,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -20,7 +19,7 @@ public class MpaDaoImpl implements MpaDao {
     @Override
     public List<Mpa> findAll() {
         final String sql = "SELECT * FROM mpa";
-        return jdbcTemplate.query(sql, this::mapRowToMpa);
+        return jdbcTemplate.query(sql, new MpaMapper());
     }
 
     @Override
@@ -28,16 +27,9 @@ public class MpaDaoImpl implements MpaDao {
         final String sql = "SELECT * FROM mpa WHERE mpa_id = ?";
 
         try {
-            return jdbcTemplate.queryForObject(sql, this::mapRowToMpa, id);
+            return (Mpa) jdbcTemplate.queryForObject(sql, new MpaMapper(), id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-    }
-
-    private Mpa mapRowToMpa(ResultSet rs, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(rs.getLong("mpa_id"))
-                .name(rs.getString("name"))
-                .build();
     }
 }

@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmLikeDao;
+import ru.yandex.practicum.filmorate.mapper.FilmLikeMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -22,7 +21,7 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
                 "GROUP BY film_id " +
                 "ORDER BY likes DESC " +
                 "LIMIT ?";
-        return jdbcTemplate.query(sql, this::rowMapToLong, limit);
+        return jdbcTemplate.query(sql, new FilmLikeMapper(), limit);
     }
 
     @Override
@@ -37,9 +36,5 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
         final var sql = "DELETE FROM film_like " +
                 "WHERE film_id = ? AND user_id = ?";
         jdbcTemplate.update(sql, filmId, userId);
-    }
-
-    private Long rowMapToLong(ResultSet rs, int rowNum) throws SQLException {
-        return rs.getLong("film_id");
     }
 }

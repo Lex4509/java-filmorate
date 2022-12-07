@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.util;
 
 import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 
 public final class ExceptionThrowHandler {
 
@@ -42,6 +39,12 @@ public final class ExceptionThrowHandler {
     public static void throwExceptionIfFilmAlreadyExists(final Film... films) {
         for (Film film : films) {
             if (film != null) throw new AlreadyExistsException("Film already exists");
+        }
+    }
+
+    public static void throwExceptionIfDirectorNotExists(final Director... directors) {
+        for (Director director : directors) {
+            if (director == null) throw new NotFoundException("Director does not exist");
         }
     }
 }

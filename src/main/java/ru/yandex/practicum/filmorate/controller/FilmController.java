@@ -53,10 +53,15 @@ public class FilmController {
     public void dislike(@PathVariable Long filmId, @PathVariable Long userId) {
         filmService.deleteLike(filmId, userId);
     }
-
     @DeleteMapping("/{filmId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFilmByID(@PathVariable Long filmId) {
         filmService.deleteById(filmId);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getDirectorFilmsSorted(@PathVariable long directorId,
+                                             @RequestParam(name = "sortBy") String sortBy){
+        return filmService.getDirectorFilmsSorted(directorId, sortBy);
     }
 }
