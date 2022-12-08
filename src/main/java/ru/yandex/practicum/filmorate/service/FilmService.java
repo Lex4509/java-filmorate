@@ -10,7 +10,9 @@ public interface FilmService {
 
     Film getById(Long id);
 
-    List<Film> getMostLikedFilms(Integer count);
+    List<Film> getMostLikedFilms(Integer count, Integer year, Long genreId);
+
+    List<Film> getRecommendedFilms(Long id);
 
     Film save(Film film);
 
@@ -21,4 +23,8 @@ public interface FilmService {
     void deleteById(Long id);
 
     void deleteLike(Long filmId, Long userId);
+
+    List<Film> getCommonFilms(Long userId, Long friendId);
+    List<Film> getDirectorFilmsSorted (long directorId, String sortBy);
+    List<Film> searchFilms(String query, String by);
 }
